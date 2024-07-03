@@ -29,6 +29,7 @@
 
     ```bash
     pip install opencv-python
+    pip install pillow
     ```
 
 3. Populate the `Videos` folder with your video files (`.mp4`, `.avi`, `.mkv`).
