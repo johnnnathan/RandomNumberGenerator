@@ -4,6 +4,7 @@ import cv2
 from pathlib import Path
 from PIL import Image
 
+
 RANDOM_FRAME = "random_frame.jpg"
 LIMIT = 1000
 
