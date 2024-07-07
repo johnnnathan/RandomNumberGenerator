@@ -1,15 +1,25 @@
+import argparse
+import math
 import pathlib
 import random
 import cv2
 from pathlib import Path
 from PIL import Image
 
-
+PATH_PRINTED = False
 RANDOM_FRAME = "random_frame.jpg"
-LIMIT = 1000
+INFINITY = math.inf
+LIMIT = INFINITY
+BASE_LIMIT = LIMIT
+FILE_PATH = None
+VERBOSE = None
 
 def printVideoName(name: str):
-    print(f"Video selected: {name}")
+    global PATH_PRINTED
+
+    if not PATH_PRINTED and VERBOSE:
+        print(f"Video selected: {name}")
+        PATH_PRINTED = True
 
 
 def getChosenColorIndex(listRGB: list) -> int:
@@ -24,7 +34,7 @@ def getFile() -> Path:
     video_files = [file for file in video_folder.iterdir() if
                    file.is_file() and file.suffix in ['.mp4', '.avi', '.mkv']]
 
-    if not video_files:
+    if not video_files and VERBOSE:
         print("Videos folder is empty")
     else:
         video = random.choice(video_files)
@@ -62,13 +72,42 @@ def getTotalRGB() -> list[int]:
     return listRGB
 
 
-def main():
-    file_path = getFile()
-    getFrame(file_path)
+def resetLimit():
+    global LIMIT
+    LIMIT = BASE_LIMIT
+
+
+def setLimit(Limit: int):
+    global LIMIT
+    LIMIT = Limit
+
+
+def getNumber() -> int:
+    global FILE_PATH
+    if not FILE_PATH:
+        FILE_PATH = getFile()
+    getFrame(FILE_PATH)
     listRGB = getTotalRGB()
     index = getChosenColorIndex(listRGB)
-    print(listRGB[index] % LIMIT)
+    return int(listRGB[index] % LIMIT)
+
+
+def main(minAcceptable: int):
+    total = ""
+    while (len(str(total)) < minAcceptable):
+        cur = abs(getNumber())
+        total = str(total) + str(cur)
+        setLimit(int(len(str(total)) - minAcceptable))
+    print(total)
+    if VERBOSE:
+        print("Length:" + str(len(total)))
+    return int(total)
 
 
 if __name__ == "__main__":
-    main()
+    parser = argparse.ArgumentParser(description='Generate a random number with a specified number of digits.')
+    parser.add_argument('digits', type=int, help='The number of digits for the random number')
+    parser.add_argument('--verbose', action='store_true', help='Enable print statements')
+    args = parser.parse_args()
+    VERBOSE = args.verbose
+    main(args.digits)
