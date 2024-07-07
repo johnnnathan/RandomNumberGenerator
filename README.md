@@ -13,6 +13,7 @@
 
 - Python 3.x
 - OpenCV (`cv2`)
+- Pillow (`PIL`)
 - pathlib
 - random
 
@@ -36,7 +37,15 @@
 
 ## Usage
 
-Run the Python script to generate a random number:
+Run the Python script to generate a random number. You can use the following command-line arguments:
+
+    digits: The number of digits for the random number (required).
+    --verbose: Enable verbose output to see additional details (optional).
+
+Example usage:
 
 ```bash
-python RandomNumberGenerator.py
+python RandomNumberGenerator.py 10 --verbose
+```
+
+This command will generate a random number with 10 digits and print additional details if --verbose is enabled.
